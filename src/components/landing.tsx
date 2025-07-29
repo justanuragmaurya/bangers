@@ -43,8 +43,7 @@ export default function LandingPage() {
 
   return (
     <>
-      {/* Hero Section */}
-      <div className="max-w-5xl mx-auto mt-12 md:mt-16 flex flex-col text-center items-center ">
+      <div className="max-w-5xl mx-auto mt-12 md:mt-16 flex flex-col text-center items-center justify-center">
         <motion.h2
           className="text-3xl md:text-5xl font-medium tracking-tight"
           initial={{ y: 10 , opacity:0 }}
@@ -84,7 +83,15 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      {/* Features Section */}
+      <motion.div 
+        initial={{y:10,opacity:0}}
+        animate={{y:0,opacity:1}}
+        transition={{duration:0.3 , delay:1}}
+        className="h-max max-w-4xl p-1 mt-10 md:mx-auto mx-2 md:p-2 bg-primary/10 hover:bg-primary/15 rounded-lg border"
+      >
+          <video autoPlay={true} controls src="https://res.cloudinary.com/dznddh4ne/video/upload/v1753800209/Rick_Astley_-_Never_Gonna_Give_You_Up_Official_Video_4K_Remaster_dmh3py.mp4"/>
+      </motion.div>
+
       <div className="max-w-6xl mx-auto mt-24 md:mt-32 px-6">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -117,7 +124,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* How It Works Section */}
       <div className="max-w-6xl mx-auto mt-24 md:mt-32 px-6">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -156,7 +162,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* CTA Section */}
       <div className="max-w-4xl mx-auto mt-24 md:mt-32 px-6 text-center mb-16">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
