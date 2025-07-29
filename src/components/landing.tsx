@@ -89,7 +89,11 @@ export default function LandingPage() {
         transition={{duration:0.3 , delay:1}}
         className="h-max max-w-4xl p-1 mt-10 md:mx-auto mx-2 md:p-2 bg-primary/10 hover:bg-primary/15 rounded-lg border"
       >
-          <video autoPlay={true} controls src="https://res.cloudinary.com/dznddh4ne/video/upload/v1753800209/Rick_Astley_-_Never_Gonna_Give_You_Up_Official_Video_4K_Remaster_dmh3py.mp4"/>
+          <video 
+            autoPlay={true} controls 
+            src="https://res.cloudinary.com/dznddh4ne/video/upload/v1753800209/Rick_Astley_-_Never_Gonna_Give_You_Up_Official_Video_4K_Remaster_dmh3py.mp4"
+            className="rounded-md"
+          />
       </motion.div>
 
       <div className="max-w-6xl mx-auto mt-24 md:mt-32 px-6">
