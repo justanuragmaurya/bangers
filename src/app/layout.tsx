@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import Providers from "@/components/provider";
 import GradientBackground from "@/components/background";
+import Footer from "@/components/footer";
 
 const font = Host_Grotesk({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Providers>
         <Navbar/>
         {children}
+        <Footer/>
         <GradientBackground/>
         </Providers>
       </body>
