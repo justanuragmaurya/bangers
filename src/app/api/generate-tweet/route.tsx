@@ -1,33 +1,71 @@
-import OpenAI from "openai";
-import fs from "fs";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { system_prompt } from "@/lib/prompt";
-
-const ai = new OpenAI({apiKey:process.env.OPEN_AI_API_KEY});
+import { GoogleGenAI } from "@google/genai";
 
 export async function POST(req:NextRequest){
-    const { file_url }:{file_url:string} = await req.json()
-    console.log(file_url)  
+    try {
+        const { link } = await req.json();
 
-    console.log("started transcribing");
-    const { text } = await ai.audio.transcriptions.create({
-        file: fs.createReadStream(file_url),
-        model: "gpt-4o-transcribe",
-    });
+        const ai = new GoogleGenAI({
+            apiKey: process.env.GEMINI_API_KEY,
+        });
 
-    const tweets = await ai.responses.create({
-        model:"gpt-40-mini",
-        input:[
-            {
-                role:"system",
-                content:system_prompt
+        const config = {
+            thinkingConfig: {
+                thinkingBudget: -1,
             },
-            {
-                role:"user",
-                content:`Here is the Videos transcriptio ${text}`
-            }
-        ]
-    })
+        } as const;
 
-    return NextResponse.json(text)
+        const model = 'gemini-2.5-flash';
+
+        const contents = [
+            {
+                role: 'user',
+                parts: [
+                    { text: system_prompt },
+                    {
+                        fileData: {
+                            fileUri: `${link}`,
+                            mimeType: 'video/*',
+                        },
+                    },
+                    { text: "Create from this " },
+                ],
+            },
+        ];
+
+        const gen = await ai.models.generateContentStream({
+            model,
+            config,
+            contents,
+        });
+
+        const encoder = new TextEncoder();
+
+        const stream = new ReadableStream<Uint8Array>({
+            async start(controller) {
+                try {
+                    for await (const chunk of gen as AsyncGenerator<any>) {
+                        const text = (chunk && (chunk as any).text) ?? (chunk?.candidates?.[0]?.content?.parts?.map((p: any) => p?.text ?? "").join("") ?? "");
+                        if (text) {
+                            controller.enqueue(encoder.encode(text));
+                        }
+                    }
+                    controller.close();
+                } catch (err) {
+                    controller.error(err);
+                }
+            },
+        });
+
+        return new Response(stream, {
+            headers: {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Cache-Control': 'no-cache',
+            },
+        });
+    } catch (error: any) {
+        const message = error?.message ?? 'Unknown error';
+        return new Response(`Error: ${message}`, { status: 500 });
+    }
 }
